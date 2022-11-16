@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Resolver, Query } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from 'src/pubSub.module';
-import { Notification } from './notification.model';
+import { Notification } from './models/notification.model';
 import { NotificationsService } from './notifications.service';
 
 @Resolver(() => Notification)

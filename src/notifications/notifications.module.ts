@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { PgNotifyClient } from 'nestjs-pg-notify';
-import { Notification } from './notification.model';
+import { Notification } from './models/notification.model';
 import { NotificationsResolver } from './notifications.resolver';
 import { NotificationsController } from './notifications.controller';
 import { NotificationToken } from './notification.token';

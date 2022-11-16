@@ -1,8 +1,6 @@
 import {
   Controller,
-  Delete,
   Inject,
-  Post,
   UseFilters,
   UseInterceptors,
   UsePipes,
@@ -21,6 +19,8 @@ import { ExceptionFilter } from './notification.exception.filter';
 import { LoggingInterceptor } from './notification.logging.interceptor';
 import { NotificationToken } from './notification.token';
 
+import { DiscussionDto, PostDto, ReactionDto } from './dto';
+
 @Controller()
 @UseFilters(ExceptionFilter)
 @UseInterceptors(LoggingInterceptor)
@@ -30,44 +30,33 @@ export class NotificationsController {
     private readonly client: ClientProxy,
   ) {}
 
-  @PgNotifyEventPattern('post_changed')
-  // @UsePipes(new ValidationPipe({ transform: true }))
-  onUserCreated(
-    @Payload() payload: any,
+  @PgNotifyEventPattern('discussion_created')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  onDiscussionCreated(
+    @Payload() payload: DiscussionDto,
     @Ctx() context: PgNotifyContext,
   ): string {
     console.log(payload, context);
     return 'UserCreated: Ok';
   }
 
-  // @PgNotifyMessagePattern({ event: 'removed', target: 'user' })
-  // @UsePipes(new ValidationPipe({ transform: true }))
-  // onUserRemoved(
-  //   @Payload() payload: any,
-  //   @Ctx() context: PgNotifyContext,
-  // ): string {
-  //   console.log(payload, context); =
-  //   return 'UserRemoved: Ok';
-  // }
+  @PgNotifyEventPattern('post_changed')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  onPostChanged(
+    @Payload() payload: PostDto,
+    @Ctx() context: PgNotifyContext,
+  ): string {
+    console.log(payload, context);
+    return 'UserCreated: Ok';
+  }
 
-  // @Post('user')
-  // createUser(): Observable<PgNotifyResponse> {
-  //   return this.client
-  //     .send<PgNotifyResponse>('user:created', {
-  //       userId: 1,
-  //       date: new Date(),
-  //     })
-  //     .pipe(timeout(2000));
-  // }
-
-  // @Delete('user')
-  // removeUser(): Observable<string> {
-  //   return this.client.emit(
-  //     { target: 'user', event: 'removed' },
-  //     {
-  //       userId: 2,
-  //       date: new Date(),
-  //     },
-  //   );
-  // }
+  @PgNotifyEventPattern('reaction_changed')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  onReactionChanged(
+    @Payload() payload: ReactionDto,
+    @Ctx() context: PgNotifyContext,
+  ): string {
+    console.log(payload, context);
+    return 'UserCreated: Ok';
+  }
 }

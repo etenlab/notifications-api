@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Post } from 'src/posts/post.model';
+import { Post } from 'src/notifications/models/post.model';
 
 @Entity(`discussions`, {
   schema: 'admin',

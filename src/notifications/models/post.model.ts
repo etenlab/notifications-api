@@ -8,8 +8,8 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Discussion } from 'src/discussions/discussion.model';
-import { Reaction } from 'src/reactions/reaction.model';
+import { Discussion } from 'src/notifications/models/discussion.model';
+import { Reaction } from 'src/notifications/models/reaction.model';
 
 @Entity(`posts`, {
   schema: `admin`,

@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Post } from 'src/posts/post.model';
+import { Post } from 'src/notifications/models/post.model';
 
 @Entity(`reactions`, {
   schema: `admin`,

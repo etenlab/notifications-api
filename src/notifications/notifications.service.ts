@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Notification } from './notification.model';
+import { Notification } from './models/notification.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
