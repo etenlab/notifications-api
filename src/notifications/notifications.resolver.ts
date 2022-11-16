@@ -1,7 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Resolver } from '@nestjs/graphql';
+import { Resolver, Query } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from 'src/pubSub.module';
+import { Notification } from './notification.model';
 import { NotificationsService } from './notifications.service';
 
 @Resolver(() => Notification)
@@ -12,16 +13,10 @@ export class NotificationsResolver {
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
-  // @Query(() => Discussion)
-  // async discussion(
-  //   @Args('id', { type: () => Int }) id: number,
-  // ): Promise<Discussion> {
-  //   const discussion = await this.discussionsService.findOneById(id);
-  //   if (!discussion) {
-  //     throw new NotFoundException(id);
-  //   }
-  //   return discussion;
-  // }
+  @Query(() => Boolean)
+  async discussion(): Promise<boolean> {
+    return true;
+  }
 
   // @Query(() => [Discussion])
   // async discussions(
