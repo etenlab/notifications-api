@@ -36,8 +36,8 @@ export class Post {
   discussion_id: number;
 
   @Column()
-  @Field(() => String, { nullable: false })
-  user_id: string;
+  @Field(() => Int)
+  user_id: number;
 
   @Column()
   @Field(() => String)

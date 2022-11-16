@@ -29,8 +29,8 @@ export class Reaction {
   post_id: number;
 
   @Column()
-  @Field(() => String)
-  user_id: string;
+  @Field(() => Int)
+  user_id: number;
 
   @Column()
   @Field(() => String)
