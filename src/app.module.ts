@@ -7,6 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiscussionsModule } from './discussions/discussions.module';
 import { PostsModule } from './posts/posts.module';
 import { ReactionsModule } from './reactions/reactions.module';
+import { AppController } from './app.controller';
+import { PubSubModule } from './pubSub.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -37,6 +40,9 @@ dotenv.config();
     DiscussionsModule,
     PostsModule,
     ReactionsModule,
+    PubSubModule,
+    NotificationsModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
