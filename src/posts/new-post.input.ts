@@ -5,8 +5,8 @@ export class NewPostInput {
   @Field(() => Int)
   discussion_id: number;
 
-  @Field(() => String, { nullable: false })
-  user_id: string;
+  @Field(() => Int, { nullable: false })
+  user_id: number;
 
   @Field(() => String)
   quill_text: string;

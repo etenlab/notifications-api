@@ -68,7 +68,7 @@ export class ReactionsResolver {
   async updateReaction(
     @Args('id') id: number,
     @Args('data') data: NewReactionInput,
-    @Args('userId') userId: string,
+    @Args('userId') userId: number,
   ): Promise<Reaction> {
     const reaction = await this.reactionsService.update(id, data, userId);
     return reaction;

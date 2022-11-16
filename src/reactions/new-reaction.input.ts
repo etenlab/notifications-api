@@ -5,8 +5,8 @@ export class NewReactionInput {
   @Field(() => Int, { nullable: false })
   post_id: number;
 
-  @Field(() => String, { nullable: false })
-  user_id: string;
+  @Field(() => Int, { nullable: false })
+  user_id: number;
 
   @Field(() => String, { nullable: false })
   content: string;

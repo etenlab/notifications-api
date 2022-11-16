@@ -16,7 +16,7 @@ export class ReactionsService {
     return await this.reactionRepository.save(reaction);
   }
 
-  async update(id: number, data: any, user_id: string): Promise<Reaction> {
+  async update(id: number, data: any, user_id: number): Promise<Reaction> {
     const reaction = await this.reactionRepository.findOneOrFail({
       where: { id },
     });

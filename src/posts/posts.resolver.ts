@@ -68,7 +68,7 @@ export class PostsResolver {
   async updatePost(
     @Args('id') id: number,
     @Args('data') data: NewPostInput,
-    @Args('userId') userId: string,
+    @Args('userId') userId: number,
   ): Promise<Post> {
     const post = await this.postsService.update(id, data, userId);
     return post;
