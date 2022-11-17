@@ -27,7 +27,7 @@ export class Notification {
   @Field(() => Int)
   row: number;
 
-  @Column()
+  @Column({ default: false })
   @Field(() => Boolean)
   acknowledged: boolean;
 

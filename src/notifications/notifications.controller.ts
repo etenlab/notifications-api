@@ -6,18 +6,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ClientProxy, Ctx, Payload } from '@nestjs/microservices';
-import {
-  PgNotifyContext,
-  PgNotifyEventPattern,
-  PgNotifyMessagePattern,
-  PgNotifyResponse,
-} from 'nestjs-pg-notify';
-import { Observable } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { ClientProxy, Payload } from '@nestjs/microservices';
+import { PgNotifyEventPattern } from 'nestjs-pg-notify';
 import { ExceptionFilter } from './notification.exception.filter';
 import { LoggingInterceptor } from './notification.logging.interceptor';
 import { NotificationToken } from './notification.token';
+import { NotificationsService } from './notifications.service';
 
 import { DiscussionDto, PostDto, ReactionDto } from './dto';
 
@@ -28,35 +22,30 @@ export class NotificationsController {
   constructor(
     @Inject(NotificationToken.PgNotifyClient)
     private readonly client: ClientProxy,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   @PgNotifyEventPattern('discussion_created')
   @UsePipes(new ValidationPipe({ transform: true }))
-  onDiscussionCreated(
-    @Payload() payload: DiscussionDto,
-    @Ctx() context: PgNotifyContext,
-  ): string {
-    console.log(payload, context);
-    return 'UserCreated: Ok';
+  onDiscussionCreated(@Payload() payload: DiscussionDto): void {
+    this.notificationsService.generateDiscussionCreatedNotifications(payload);
   }
 
   @PgNotifyEventPattern('post_changed')
   @UsePipes(new ValidationPipe({ transform: true }))
-  onPostChanged(
-    @Payload() payload: PostDto,
-    @Ctx() context: PgNotifyContext,
-  ): string {
-    console.log(payload, context);
-    return 'UserCreated: Ok';
+  onPostChanged(@Payload() payload: PostDto): void {
+    this.notificationsService.generatePostChangedNotifications(payload);
   }
 
   @PgNotifyEventPattern('reaction_changed')
   @UsePipes(new ValidationPipe({ transform: true }))
-  onReactionChanged(
-    @Payload() payload: ReactionDto,
-    @Ctx() context: PgNotifyContext,
-  ): string {
-    console.log(payload, context);
-    return 'UserCreated: Ok';
+  onReactionChanged(@Payload() payload: ReactionDto): void {
+    this.notificationsService.generateReactionChangedNotifications(payload);
+  }
+
+  @PgNotifyEventPattern('notification_created')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  onNotificationCreated(@Payload() payload: any): void {
+    // this.notificationsService.generateReactionChangedNotifications(payload);
   }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { PgNotifyClient } from 'nestjs-pg-notify';
-import { Notification } from './models/notification.model';
+import { Notification, Discussion, Reaction, Post, User } from './models';
 import { NotificationsResolver } from './notifications.resolver';
 import { NotificationsController } from './notifications.controller';
 import { NotificationToken } from './notification.token';
@@ -11,7 +11,9 @@ import { NotificationsService } from './notifications.service';
 dotenv.config();
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Notification])],
+  imports: [
+    TypeOrmModule.forFeature([Notification, Discussion, Post, Reaction, User]),
+  ],
   controllers: [NotificationsController],
   providers: [
     {

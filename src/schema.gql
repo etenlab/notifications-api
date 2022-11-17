@@ -2,6 +2,38 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Discussion {
+  app: Int!
+  id: Int!
+  org: Int!
+  posts: [Post]!
+  row: Int!
+  table_name: String!
+}
+
+type Post {
+  created_at: DateTime!
+  discussion: Discussion!
+  id: Int!
+  plain_text: String!
+  postgres_language: String!
+  quill_text: String!
+  reactions: [Reaction]!
+  user_id: Int!
+}
+
 type Query {
   discussion: Boolean!
+}
+
+type Reaction {
+  content: String!
+  id: Int!
+  post: Post!
+  user_id: Int!
 }
