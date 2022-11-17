@@ -57,7 +57,7 @@ export class NotificationsResolver {
   }
 
   @Subscription(() => Notification, {
-    name: 'NotificationToken.NotificationAdded',
+    name: NotificationToken.NotificationAdded,
     filter: (payload, variables) => {
       // console.log(payload, variables);
       return payload.notificationAdded.user_id === variables._userId;
