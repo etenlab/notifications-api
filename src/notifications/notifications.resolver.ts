@@ -1,9 +1,17 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { Resolver, Query } from '@nestjs/graphql';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Resolver,
+  Query,
+  Subscription,
+  Args,
+  Int,
+  Mutation,
+} from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from 'src/pubSub.module';
 import { Notification } from './models/notification.model';
 import { NotificationsService } from './notifications.service';
+import { NotificationToken } from './notification.token';
 
 @Resolver(() => Notification)
 @Injectable()
@@ -13,46 +21,49 @@ export class NotificationsResolver {
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
-  @Query(() => Boolean)
-  async discussion(): Promise<boolean> {
-    return true;
+  @Query(() => [Notification])
+  async notifications(
+    @Args('userId', { type: () => Int }) userId: number,
+  ): Promise<Notification[]> {
+    const notifications = await this.notificationsService.findByUserId(userId);
+    if (!notifications) {
+      return [];
+    }
+    return notifications;
   }
 
-  // @Query(() => [Discussion])
-  // async discussions(
-  //   @Args('table_name') table_name: string,
-  //   @Args('row', { type: () => Int }) row: number,
-  // ): Promise<Discussion[]> {
-  //   const discussions = await this.discussionsService.findByTableNameAndRow(
-  //     table_name,
-  //     row,
-  //   );
-  //   if (!discussions) {
-  //     return [];
-  //   }
-  //   return discussions;
-  // }
+  @Mutation(() => Notification)
+  async acknowledgedNotification(@Args('id', { type: () => Int }) id: number) {
+    const notification =
+      await this.notificationsService.acknowledgedNotification(id);
+    if (!notification) {
+      throw new NotFoundException(`Not found notification by #${id}`);
+    }
+    return notification;
+  }
 
-  // @Mutation(() => Discussion)
-  // async createDiscussion(
-  //   @Args('newDiscussionData') newDiscussionData: NewDiscussionInput,
-  // ): Promise<Discussion> {
-  //   const { id } = await this.discussionsService.create(newDiscussionData);
-  //   const discussion = await this.discussionsService.findOneById(id);
-  //   if (!discussion) {
-  //     throw new NotFoundException(id);
-  //   }
-  //   this.pubSub.publish('discussionCreated', { discussionCreated: discussion });
-  //   return discussion;
-  // }
+  @Mutation(() => Boolean)
+  async deleteNotification(@Args('id', { type: () => Int }) id: number) {
+    const isDeleted = await this.notificationsService.delete(id);
+    return isDeleted;
+  }
 
-  // @Subscription(() => Discussion)
-  // async discussionCreated() {
-  //   return this.pubSub.asyncIterator('discussionCreated');
-  // }
+  @Mutation(() => Boolean)
+  async deleteNotificationsByUserId(
+    @Args('userId', { type: () => Int }) userId: number,
+  ) {
+    const isDeleted = await this.notificationsService.deleteByUserId(userId);
+    return isDeleted;
+  }
 
-  // @Mutation(() => Boolean)
-  // async deleteDiscussion(@Args('id', { type: () => Int }) id: number) {
-  //   return this.discussionsService.delete(id);
-  // }
+  @Subscription(() => Notification, {
+    name: 'NotificationToken.NotificationAdded',
+    filter: (payload, variables) => {
+      // console.log(payload, variables);
+      return payload.notificationAdded.user_id === variables._userId;
+    },
+  })
+  async subscribeNotificationAdded(@Args('userId') _userId: number) {
+    return this.pubSub.asyncIterator(NotificationToken.NotificationAdded);
+  }
 }

@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { DiscussionDto, PostDto, ReactionDto } from './dto';
 import { Discussion, Notification, Post, Reaction, User } from './models';
+import { PubSub } from 'graphql-subscriptions';
+import { PUB_SUB } from 'src/pubSub.module';
+import { NotificationToken } from './notification.token';
 
 @Injectable()
 export class NotificationsService {
@@ -18,6 +21,7 @@ export class NotificationsService {
     private reactionRepository: Repository<Reaction>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
   async generateDiscussionCreatedNotifications(
@@ -91,7 +95,9 @@ export class NotificationsService {
       .execute();
   }
 
-  async generateReactionChangedNotifications(payload: ReactionDto) {
+  async generateReactionChangedNotifications(
+    payload: ReactionDto,
+  ): Promise<void> {
     const { operation, record } = payload;
     const content = {
       type: 'REACTION',
@@ -137,5 +143,45 @@ export class NotificationsService {
         })),
       )
       .execute();
+  }
+
+  async listenNofity(notification: Notification): Promise<void> {
+    const notificationAdded = NotificationToken.NotificationAdded;
+    this.pubSub.publish(notificationAdded, {
+      [notificationAdded]: notification,
+    });
+  }
+
+  async findByUserId(userId: number): Promise<Notification[]> {
+    const notifications = await this.notificationRepository.find({
+      where: { user_id: userId },
+    });
+    if (!notifications) {
+      throw new NotFoundException(
+        `Notifications not found by user_id#${userId}`,
+      );
+    }
+    return notifications;
+  }
+
+  async acknowledgedNotification(id: number): Promise<Notification> {
+    const notification = await this.notificationRepository.findOneOrFail({
+      where: { id },
+    });
+    if (notification && notification.id === id) {
+      await this.notificationRepository.update({ id }, { acknowledged: true });
+      return await this.notificationRepository.findOneOrFail({ where: { id } });
+    }
+    throw new NotFoundException("You cannot update what you don't own...");
+  }
+
+  async delete(id: number): Promise<boolean> {
+    await this.notificationRepository.delete({ id });
+    return true;
+  }
+
+  async deleteByUserId(userId: number): Promise<boolean> {
+    await this.notificationRepository.delete({ user_id: userId });
+    return true;
   }
 }

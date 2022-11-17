@@ -13,7 +13,7 @@ import { LoggingInterceptor } from './notification.logging.interceptor';
 import { NotificationToken } from './notification.token';
 import { NotificationsService } from './notifications.service';
 
-import { DiscussionDto, PostDto, ReactionDto } from './dto';
+import { DiscussionDto, NotificationDto, PostDto, ReactionDto } from './dto';
 
 @Controller()
 @UseFilters(ExceptionFilter)
@@ -45,7 +45,7 @@ export class NotificationsController {
 
   @PgNotifyEventPattern('notification_created')
   @UsePipes(new ValidationPipe({ transform: true }))
-  onNotificationCreated(@Payload() payload: any): void {
-    // this.notificationsService.generateReactionChangedNotifications(payload);
+  onNotificationCreated(@Payload() payload: NotificationDto): void {
+    this.notificationsService.listenNofity(payload.record);
   }
 }

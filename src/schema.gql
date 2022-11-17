@@ -16,6 +16,22 @@ type Discussion {
   table_name: String!
 }
 
+type Mutation {
+  acknowledgedNotification(id: Int!): Notification!
+  deleteNotification(id: Int!): Boolean!
+  deleteNotificationsByUserId(userId: Int!): Boolean!
+}
+
+type Notification {
+  acknowledged: Boolean!
+  content: String!
+  created_at: DateTime!
+  id: Int!
+  row: Int!
+  table_name: String!
+  user_id: Int!
+}
+
 type Post {
   created_at: DateTime!
   discussion: Discussion!
@@ -28,7 +44,7 @@ type Post {
 }
 
 type Query {
-  discussion: Boolean!
+  notifications(userId: Int!): [Notification!]!
 }
 
 type Reaction {
@@ -36,4 +52,8 @@ type Reaction {
   id: Int!
   post: Post!
   user_id: Int!
+}
+
+type Subscription {
+  notificationAdded(userId: Float!): Notification!
 }
