@@ -17,8 +17,8 @@ type Discussion {
 }
 
 type Mutation {
-  acknowledgedNotification(id: Int!): Notification!
-  deleteNotification(id: Int!): Boolean!
+  acknowledgedNotification(id: Int!): Int!
+  deleteNotification(id: Int!): Int!
   deleteNotificationsByUserId(userId: Int!): Boolean!
 }
 
@@ -55,5 +55,5 @@ type Reaction {
 }
 
 type Subscription {
-  notificationAdded(userId: Float!): Notification!
+  notificationAdded(userId: Int!): Notification!
 }

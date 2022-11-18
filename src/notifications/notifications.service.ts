@@ -31,6 +31,7 @@ export class NotificationsService {
     const content = {
       type: 'DISCUSSION',
       operation,
+      operator: '',
       summary: '',
     };
     const users = await this.userRepository.find({
@@ -59,6 +60,7 @@ export class NotificationsService {
     const content = {
       type: 'POST',
       operation,
+      operator: record.user_id,
       summary: record.plain_text,
     };
     const { table_name, row } = await this.discussionRepository.findOne({
@@ -71,14 +73,13 @@ export class NotificationsService {
       },
     });
 
-    const users = await this.postRepository.find({
-      select: {
-        user_id: true,
-      },
-      where: {
-        discussion_id: record.discussion_id,
-      },
-    });
+    const users = await this.postRepository
+      .createQueryBuilder('admin.posts')
+      .select('DISTINCT(user_id)')
+      .where('discussion_id = :discussionId', {
+        discussionId: record.discussion_id,
+      })
+      .execute();
 
     await this.notificationRepository
       .createQueryBuilder()
@@ -102,6 +103,7 @@ export class NotificationsService {
     const content = {
       type: 'REACTION',
       operation,
+      operator: record.user_id,
       summary: record.content,
     };
     const {
@@ -121,14 +123,13 @@ export class NotificationsService {
       },
     });
 
-    const users = await this.postRepository.find({
-      select: {
-        user_id: true,
-      },
-      where: {
-        id: record.post_id,
-      },
-    });
+    const users = await this.postRepository
+      .createQueryBuilder('admin.posts')
+      .select('DISTINCT(user_id)')
+      .where('id = :postId', {
+        postId: record.post_id,
+      })
+      .execute();
 
     await this.notificationRepository
       .createQueryBuilder()
@@ -148,7 +149,10 @@ export class NotificationsService {
   async listenNofity(notification: Notification): Promise<void> {
     const notificationAdded = NotificationToken.NotificationAdded;
     this.pubSub.publish(notificationAdded, {
-      [notificationAdded]: notification,
+      [notificationAdded]: {
+        ...notification,
+        created_at: new Date(notification.created_at),
+      },
     });
   }
 

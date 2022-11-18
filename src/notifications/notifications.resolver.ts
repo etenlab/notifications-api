@@ -32,20 +32,20 @@ export class NotificationsResolver {
     return notifications;
   }
 
-  @Mutation(() => Notification)
+  @Mutation(() => Int)
   async acknowledgedNotification(@Args('id', { type: () => Int }) id: number) {
     const notification =
       await this.notificationsService.acknowledgedNotification(id);
     if (!notification) {
       throw new NotFoundException(`Not found notification by #${id}`);
     }
-    return notification;
+    return id;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Int)
   async deleteNotification(@Args('id', { type: () => Int }) id: number) {
-    const isDeleted = await this.notificationsService.delete(id);
-    return isDeleted;
+    await this.notificationsService.delete(id);
+    return id;
   }
 
   @Mutation(() => Boolean)
@@ -59,11 +59,12 @@ export class NotificationsResolver {
   @Subscription(() => Notification, {
     name: NotificationToken.NotificationAdded,
     filter: (payload, variables) => {
-      // console.log(payload, variables);
-      return payload.notificationAdded.user_id === variables._userId;
+      return payload.notificationAdded.user_id === variables.userId;
     },
   })
-  async subscribeNotificationAdded(@Args('userId') _userId: number) {
+  async subscribeNotificationAdded(
+    @Args('userId', { type: () => Int }) _userId: number,
+  ) {
     return this.pubSub.asyncIterator(NotificationToken.NotificationAdded);
   }
 }
