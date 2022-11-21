@@ -79,6 +79,9 @@ export class NotificationsService {
       .where('discussion_id = :discussionId', {
         discussionId: record.discussion_id,
       })
+      .andWhere('user_id != :userId', {
+        userId: record.user_id,
+      })
       .execute();
 
     await this.notificationRepository
@@ -128,6 +131,9 @@ export class NotificationsService {
       .select('DISTINCT(user_id)')
       .where('id = :postId', {
         postId: record.post_id,
+      })
+      .andWhere('user_id != :userId', {
+        userId: record.user_id,
       })
       .execute();
 
