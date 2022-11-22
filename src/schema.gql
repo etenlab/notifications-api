@@ -20,6 +20,7 @@ type Mutation {
   acknowledgedNotification(id: Int!): Int!
   deleteNotification(id: Int!): Int!
   deleteNotificationsByUserId(userId: Int!): Boolean!
+  setAcknowledgedNotificationsByUserId(userId: Int!): Boolean!
 }
 
 type Notification {

@@ -109,9 +109,7 @@ export class NotificationsService {
       operator: record.user_id,
       summary: record.content,
     };
-    const {
-      discussion: { table_name, row },
-    } = await this.postRepository.findOne({
+    const post = await this.postRepository.findOne({
       relations: {
         discussion: true,
       },
@@ -125,6 +123,14 @@ export class NotificationsService {
         id: record.post_id,
       },
     });
+
+    if (!post) {
+      return;
+    }
+
+    const {
+      discussion: { table_name, row },
+    } = post;
 
     const users = await this.postRepository
       .createQueryBuilder('admin.posts')
@@ -183,6 +189,22 @@ export class NotificationsService {
       return await this.notificationRepository.findOneOrFail({ where: { id } });
     }
     throw new NotFoundException("You cannot update what you don't own...");
+  }
+
+  async setAcknowledgedNotificationsByUserId(userId: number): Promise<boolean> {
+    await this.notificationRepository
+      .createQueryBuilder()
+      .update()
+      .set({ acknowledged: true })
+      .where('user_id = :userId', {
+        userId,
+      })
+      .andWhere('acknowledged = :acknowledged', {
+        acknowledged: false,
+      })
+      .execute();
+
+    return true;
   }
 
   async delete(id: number): Promise<boolean> {

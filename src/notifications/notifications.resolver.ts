@@ -42,6 +42,17 @@ export class NotificationsResolver {
     return id;
   }
 
+  @Mutation(() => Boolean)
+  async setAcknowledgedNotificationsByUserId(
+    @Args('userId', { type: () => Int }) userId: number,
+  ) {
+    const isUpdated =
+      await this.notificationsService.setAcknowledgedNotificationsByUserId(
+        userId,
+      );
+    return isUpdated;
+  }
+
   @Mutation(() => Int)
   async deleteNotification(@Args('id', { type: () => Int }) id: number) {
     await this.notificationsService.delete(id);
