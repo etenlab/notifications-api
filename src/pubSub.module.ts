@@ -3,6 +3,8 @@ import { PubSub } from 'graphql-subscriptions';
 
 export const PUB_SUB = 'PUB_SUB';
 
+// This module used as a common PubSub object across the Notification App
+// but it will be changed with other advanced solutions.
 @Global()
 @Module({
   providers: [

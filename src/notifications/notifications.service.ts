@@ -24,6 +24,8 @@ export class NotificationsService {
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
+  // Whenever we found changes in Discussion Table, this function is called by conroller,
+  // and create a new Notification.
   async generateDiscussionCreatedNotifications(
     payload: DiscussionDto,
   ): Promise<void> {
@@ -55,6 +57,8 @@ export class NotificationsService {
       .execute();
   }
 
+  // Whenever we found changes in Post Table, this function is called by conroller,
+  // and create a new Notification.
   async generatePostChangedNotifications(payload: PostDto): Promise<void> {
     const { operation, record } = payload;
     const content = {
@@ -99,6 +103,8 @@ export class NotificationsService {
       .execute();
   }
 
+  // Whenever we found changes in Reaction Table, this function is called by conroller,
+  // and create a new Notification.
   async generateReactionChangedNotifications(
     payload: ReactionDto,
   ): Promise<void> {
@@ -158,6 +164,8 @@ export class NotificationsService {
       .execute();
   }
 
+  // Whenever we found changed in Notification, send notification to the Client
+  // via PubSub object.
   async listenNofity(notification: Notification): Promise<void> {
     const notificationAdded = NotificationToken.NotificationAdded;
     this.pubSub.publish(notificationAdded, {
