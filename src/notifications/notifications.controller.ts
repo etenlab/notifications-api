@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { PgNotifyEventPattern } from 'nestjs-pg-notify';
-import { ExceptionFilter } from './notification.exception.filter';
-import { LoggingInterceptor } from './notification.logging.interceptor';
-import { NotificationToken } from './notification.token';
+import { ExceptionFilter } from '../exception.filter';
+import { LoggingInterceptor } from '../logging.interceptor';
+import { NotificationToken } from '../token';
 import { NotificationsService } from './notifications.service';
 
 import { DiscussionDto, PostDto, ReactionDto } from './dto';

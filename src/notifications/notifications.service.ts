@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { DiscussionDto, PostDto, ReactionDto } from './dto';
 import { Discussion, Notification, Post, Reaction, User } from './models';
-import { NotificationToken } from './notification.token';
+import { NotificationToken } from '../token';
 
 @Injectable()
 export class NotificationsService {

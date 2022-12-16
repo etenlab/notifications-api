@@ -4,7 +4,7 @@ import { PgNotifyClient } from 'nestjs-pg-notify';
 import { Notification, Discussion, Reaction, Post, User } from './models';
 import { NotificationsResolver } from './notifications.resolver';
 import { NotificationsController } from './notifications.controller';
-import { NotificationToken } from './notification.token';
+import { NotificationToken } from '../token';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { NotificationsService } from './notifications.service';
