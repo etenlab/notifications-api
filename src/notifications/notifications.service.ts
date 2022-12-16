@@ -1,11 +1,9 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { DiscussionDto, PostDto, ReactionDto } from './dto';
 import { Discussion, Notification, Post, Reaction, User } from './models';
-import { PubSub } from 'graphql-subscriptions';
-import { PUB_SUB } from 'src/pubSub.module';
 import { NotificationToken } from './notification.token';
 
 @Injectable()
@@ -21,7 +19,6 @@ export class NotificationsService {
     private reactionRepository: Repository<Reaction>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
   // Whenever we found changes in Discussion Table, this function is called by conroller,
@@ -162,18 +159,6 @@ export class NotificationsService {
         })),
       )
       .execute();
-  }
-
-  // Whenever we found changed in Notification, send notification to the Client
-  // via PubSub object.
-  async listenNofity(notification: Notification): Promise<void> {
-    const notificationAdded = NotificationToken.NotificationAdded;
-    this.pubSub.publish(notificationAdded, {
-      [notificationAdded]: {
-        ...notification,
-        created_at: new Date(notification.created_at),
-      },
-    });
   }
 
   async findByUserId(userId: number): Promise<Notification[]> {

@@ -1,24 +1,19 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   Resolver,
   Query,
-  Subscription,
   Args,
   Int,
   Mutation,
 } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { PUB_SUB } from 'src/pubSub.module';
 import { Notification } from './models/notification.model';
 import { NotificationsService } from './notifications.service';
-import { NotificationToken } from './notification.token';
 
 @Resolver(() => Notification)
 @Injectable()
 export class NotificationsResolver {
   constructor(
     private readonly notificationsService: NotificationsService,
-    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
   @Query(() => [Notification])
@@ -65,17 +60,5 @@ export class NotificationsResolver {
   ) {
     const isDeleted = await this.notificationsService.deleteByUserId(userId);
     return isDeleted;
-  }
-
-  @Subscription(() => Notification, {
-    name: NotificationToken.NotificationAdded,
-    filter: (payload, variables) => {
-      return payload.notificationAdded.user_id === variables.userId;
-    },
-  })
-  async subscribeNotificationAdded(
-    @Args('userId', { type: () => Int }) _userId: number,
-  ) {
-    return this.pubSub.asyncIterator(NotificationToken.NotificationAdded);
   }
 }
