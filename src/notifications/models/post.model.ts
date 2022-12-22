@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Directive, Field, Int, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -15,6 +15,7 @@ import { Reaction } from 'src/notifications/models/reaction.model';
   schema: `admin`,
 })
 @ObjectType()
+@Directive('@key(fields: "id")')
 export class Post {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
