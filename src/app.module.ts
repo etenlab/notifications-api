@@ -31,6 +31,7 @@ dotenv.config();
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
     NotificationsModule,
   ],
