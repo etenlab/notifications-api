@@ -1,10 +1,11 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Directive, Field, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Post } from 'src/notifications/models/post.model';
 
 @Entity(`discussions`, {
   schema: 'admin',
 })
+@Directive('@key(fields: "id")')
 @ObjectType()
 export class Discussion {
   @PrimaryGeneratedColumn()
